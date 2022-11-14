@@ -12,7 +12,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "12.x"
-      - run: npm CI # npm install 과 비슷하지만 이건 CI 환경에 좀 더 적합
+      - run: npm ci # npm install 과 비슷하지만 이건 CI 환경에 좀 더 적합
       - run: npm run format:check
       - run: npm test -- --coverage
         env:
