@@ -1,0 +1,19 @@
+name: CI
+on:
+  pull_request:
+    branches: [develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use NodeJS
+        uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+      - run: npm CI # npm install 과 비슷하지만 이건 CI 환경에 좀 더 적합
+      - run: npm run format:check
+      - run: npm test -- --coverage
+        env:
+          CI: true # npm test 에 CI 환경변수를 true 로 해야하는 부분이 있음
