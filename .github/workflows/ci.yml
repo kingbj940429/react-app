@@ -2,6 +2,8 @@ name: CI
 on:
   pull_request:
     branches: [develop]
+  push:
+    branches: [develop]
 
 jobs:
   build:
@@ -12,7 +14,16 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "12.x"
-      - run: npm ci # npm install 과 비슷하지만 이건 CI 환경에 좀 더 적합
+      - run: npm ci
       - run: npm test -- --coverage
         env:
-          CI: true # npm test 에 CI 환경변수를 true 로 해야하는 부분이 있음
+          CI: true
+      - name: Build Projects
+      - if: github.event_name == 'push' # push 할때만 동작한다
+      - run: npm run build
+      - name: Deploy to Staging
+        if: github.event_name == 'push' # push 할때만 동작한다
+        run: npx surge --project ./build --domain silent-apparatus.surge.sh
+        env:
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
